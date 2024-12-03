@@ -18,7 +18,7 @@ const App = () => {
     { id: 3, name: "Sports" },
     { id: 4, name: "Art" },
     { id: 5, name: "Business" },
-    { id: 6, name: "Education" }
+    { id: 6, name: "Education" },
   ];
 
   const handleChange = (e) => {
@@ -47,7 +47,7 @@ const App = () => {
           // After successful registration, switch to Login page
           setTimeout(() => setIsLoginPage(true), 2000);
         } else {
-          setUserId(1); // Assume user ID is 1 for now after successful login
+          setUserId(data.user_id); // Use actual user ID from response
         }
       } else {
         setMessage(data.message || "An error occurred.");
@@ -144,8 +144,13 @@ const App = () => {
             )}
             <button type="submit">{isLoginPage ? "Login" : "Register"}</button>
             <p>{message}</p>
-            <button onClick={() => setIsLoginPage(!isLoginPage)}>
-              {isLoginPage ? "Don't have an account? Register" : "Already have an account? Login"}
+            <button
+              type="button"
+              onClick={() => setIsLoginPage(!isLoginPage)}
+            >
+              {isLoginPage
+                ? "Don't have an account? Register"
+                : "Already have an account? Login"}
             </button>
           </form>
         )}
