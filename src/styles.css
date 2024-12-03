@@ -1,122 +1,174 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;600&family=Roboto:wght@300;400;700&display=swap');
+
+/* Body Styles */
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: url('https://source.unsplash.com/1920x1080/?technology,events') no-repeat center center fixed;
-    background-size: cover;
-    color: #fff;
+  margin: 0;
+  font-family: 'Quicksand', 'Roboto', sans-serif;
+  background: linear-gradient(to right, #141e30, #243b55);
+  color: #fff;
+  text-align: center;
+  overflow-x: hidden;
+}
+
+/* Main Container */
+.app-container {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Animated Background */
+.background-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(14, 50, 85, 0.7), rgba(20, 30, 48, 0.9));
+  animation: gradient-animation 10s ease infinite;
+  z-index: -1;
+}
+
+@keyframes gradient-animation {
+  0% {
+    background: radial-gradient(circle, rgba(14, 50, 85, 0.7), rgba(20, 30, 48, 0.9));
   }
-  
-  .app-container {
-    position: relative;
-    text-align: center;
-    padding-top: 50px;
+  50% {
+    background: radial-gradient(circle, rgba(25, 25, 112, 0.7), rgba(0, 0, 51, 0.9));
   }
-  
-  .background-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    z-index: -1;
+  100% {
+    background: radial-gradient(circle, rgba(14, 50, 85, 0.7), rgba(20, 30, 48, 0.9));
   }
-  
-  .form-container {
-    max-width: 400px;
-    margin: 20px auto;
-    padding: 20px;
-    border-radius: 10px;
-    background-color: rgba(255, 255, 255, 0.9);
-    color: #333;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Form Container */
+.form-container {
+  max-width: 400px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  color: #f0f8ff;
+}
+
+/* Headings */
+h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+h2 {
+  font-size: 1.8rem;
+  color: #f9a825;
+  margin-bottom: 20px;
+}
+
+/* Inputs */
+input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: none;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.8);
+  color: #333;
+  font-size: 1rem;
+  font-family: 'Roboto', sans-serif;
+  transition: box-shadow 0.3s ease;
+}
+
+input:focus {
+  outline: none;
+  box-shadow: 0 0 10px #f9a825;
+}
+
+/* Buttons */
+button {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(45deg, #ff6a00, #ee0979);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.2rem;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 20px rgba(238, 9, 121, 0.6);
+}
+
+/* Links */
+.switch-link {
+  margin-top: 15px;
+  font-size: 0.95rem;
+  color: #00e6ff;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.switch-link:hover {
+  text-decoration: underline;
+}
+
+/* Preferences Section */
+.preferences-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.preference-item {
+  padding: 10px 20px;
+  border: 2px solid #f9a825;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #f9a825;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.preference-item:hover,
+.preference-item.selected {
+  background: #f9a825;
+  color: #333;
+}
+
+/* Success Message Styling */
+.success-message {
+  margin-top: 15px;
+  background: linear-gradient(45deg, #34e89e, #0f3443);
+  color: #fff;
+  font-weight: bold;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  animation: fade-in 0.5s ease-in-out;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
   }
-  
-  h1 {
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-    z-index: 1;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  h2 {
-    color: #007bff;
-    margin-bottom: 20px;
-  }
-  
-  .form-group {
-    margin-bottom: 15px;
-    text-align: left;
-  }
-  
-  label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-  }
-  
-  input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 1rem;
-    box-sizing: border-box;
-  }
-  
-  .btn {
-    width: 100%;
-    padding: 12px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: background-color 0.3s;
-  }
-  
-  .btn:hover {
-    background-color: #0056b3;
-  }
-  
-  .switch-link {
-    margin-top: 15px;
-    font-size: 0.9rem;
-    color: #007bff;
-    cursor: pointer;
-  }
-  
-  .switch-link:hover {
-    text-decoration: underline;
-  }
-  
-  .message {
-    margin-top: 10px;
-    font-size: 0.9rem;
-    color: #28a745;
-  }
-  
-  .preferences-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 20px;
-  }
-  
-  .preference-item {
-    padding: 10px 20px;
-    margin: 10px;
-    border: 2px solid #007bff;
-    border-radius: 5px;
-    color: #007bff;
-    cursor: pointer;
-    transition: all 0.3s;
-  }
-  
-  .preference-item:hover,
-  .preference-item.selected {
-    background-color: #007bff;
-    color: #fff;
-  }
-  
+}

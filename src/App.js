@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import "./styles.css"; // Link to the CSS file for styling
+import "./styles.css";
 
 const App = () => {
-  const [isLoginPage, setIsLoginPage] = useState(false); // Toggle between Register and Login
+  const [isLoginPage, setIsLoginPage] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -10,7 +10,8 @@ const App = () => {
   });
   const [message, setMessage] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [userId, setUserId] = useState(null); // Store user ID after successful login
+  const [userId, setUserId] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(""); // New state for success message
 
   const categories = [
     { id: 1, name: "Music" },
@@ -28,7 +29,7 @@ const App = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage(""); // Clear previous messages
+    setMessage("");
 
     try {
       const url = isLoginPage
@@ -42,18 +43,16 @@ const App = () => {
 
       const data = await response.json();
       if (response.ok) {
-        setMessage(data.message); // Success message
+        setMessage(data.message);
         if (!isLoginPage) {
-          // After successful registration, switch to Login page
           setTimeout(() => setIsLoginPage(true), 2000);
         } else {
-          setUserId(data.user_id); // Use actual user ID from response
+          setUserId(data.user_id);
         }
       } else {
         setMessage(data.message || "An error occurred.");
       }
     } catch (error) {
-      console.error("Error:", error);
       setMessage("An unexpected error occurred.");
     }
   };
@@ -78,13 +77,14 @@ const App = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           user_id: userId,
-          preferences: selectedCategories, // Sending category names
+          preferences: selectedCategories,
         }),
       });
 
       const data = await response.json();
       if (response.ok) {
-        alert("Preferences saved successfully!");
+        setSuccessMessage("Preferences saved successfully!"); // Show success message
+        setTimeout(() => setSuccessMessage(""), 3000); // Hide after 3 seconds
       } else {
         alert(data.message || "Failed to save preferences");
       }
@@ -96,32 +96,38 @@ const App = () => {
   return (
     <div className="app-container">
       <div className="background-overlay"></div>
-      <h1>Welcome to Event Management</h1>
+      <h1>EventSphere</h1>
       <div className="form-container">
         {userId ? (
-          <div>
-            <h2>Choose your event preferences</h2>
-            {categories.map((category) => (
-              <div key={category.id}>
-                <input
-                  type="checkbox"
-                  checked={selectedCategories.includes(category.name)} // Check for category name
-                  onChange={() => handleCategorySelect(category.name)} // Pass category name
-                />
-                <label>{category.name}</label>
-              </div>
-            ))}
+          <>
+            <h2>Select Your Interests</h2>
+            <div className="preferences-container">
+              {categories.map((category) => (
+                <div
+                  key={category.id}
+                  className={`preference-item ${
+                    selectedCategories.includes(category.name) ? "selected" : ""
+                  }`}
+                  onClick={() => handleCategorySelect(category.name)}
+                >
+                  {category.name}
+                </div>
+              ))}
+            </div>
             <button onClick={handleSavePreferences}>Save Preferences</button>
-          </div>
+            {successMessage && (
+              <div className="success-message">{successMessage}</div>
+            )}
+          </>
         ) : (
           <form onSubmit={handleSubmit}>
-            <h2>{isLoginPage ? "Login" : "Register"}</h2>
+            <h2>{isLoginPage ? "Welcome Back!" : "Join Us Today!"}</h2>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="Email"
+              placeholder="Enter Email"
               required
             />
             <input
@@ -129,7 +135,7 @@ const App = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              placeholder="Password"
+              placeholder="Enter Password"
               required
             />
             {!isLoginPage && (
@@ -138,20 +144,22 @@ const App = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                placeholder="Name"
+                placeholder="Enter Full Name"
                 required
               />
             )}
-            <button type="submit">{isLoginPage ? "Login" : "Register"}</button>
+            <button type="submit">
+              {isLoginPage ? "Login" : "Register"}
+            </button>
             <p>{message}</p>
-            <button
-              type="button"
+            <a
+              className="switch-link"
               onClick={() => setIsLoginPage(!isLoginPage)}
             >
               {isLoginPage
                 ? "Don't have an account? Register"
                 : "Already have an account? Login"}
-            </button>
+            </a>
           </form>
         )}
       </div>
