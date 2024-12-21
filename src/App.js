@@ -36,7 +36,7 @@ const App = () => {
   };
 
   const handleLogout = () => {
-    setUser(null);
+    setUser({ id: null, name: "", email: "", joinedDate: "" });
     setView("login");
   };
 
@@ -75,7 +75,7 @@ const App = () => {
       case "notifications":
         return <NotificationsList />;
       case "profile":
-        return <Profile user={user} onUpdateUser={handleUpdateUser} />;
+        return <Profile user={user} onUpdateUser={handleUpdateUser} onNavigate={setView} onLogout={handleLogout} />;
       default:
         return <Register onRegisterSuccess={handleRegisterSuccess} onNavigateToLogin={() => setView("login")} />;
     }

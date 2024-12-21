@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import Navbar from './Navbar';
 import './Profile.css';
 
-const Profile = ({ userId, onUpdateUser }) => {
-  const [user, setUser] = useState(null);
-  const [message, setMessage] = useState('');
+const Profile = ({ user, onUpdateUser, onNavigate, onLogout }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -11,23 +10,11 @@ const Profile = ({ userId, onUpdateUser }) => {
   });
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await fetch(`http://localhost:5000/profile/${userId}`);
-        if (response.ok) {
-          const data = await response.json();
-          setUser(data);
-          setFormData({ name: data.name, email: data.email });
-        } else {
-          setMessage('Failed to fetch user data.');
-        }
-      } catch (error) {
-        setMessage(`Error fetching user data: ${error.message}`);
-      }
-    };
-
-    fetchUserData();
-  }, [userId]);
+    setFormData({
+      name: user.name || '',
+      email: user.email || '',
+    });
+  }, [user]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -42,66 +29,61 @@ const Profile = ({ userId, onUpdateUser }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ user_id: userId, ...formData }),
+        body: JSON.stringify({ user_id: user.id, ...formData }),
       });
 
       if (response.ok) {
         const updatedUser = await response.json();
-        setUser(updatedUser);
-        setIsEditing(false);
-        setMessage('Profile updated successfully.');
         onUpdateUser(updatedUser);
+        setIsEditing(false);
       } else {
-        setMessage('Failed to update profile.');
+        const errorData = await response.json();
+        console.log('Error updating profile:', errorData);
       }
     } catch (error) {
-      setMessage(`Error updating profile: ${error.message}`);
+      console.log('Error updating profile:', error);
     }
   };
 
-  if (!user) {
-    return (
-      <div className="profile-container">
-        <p>{message || 'Failed to load user data.'}</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="profile-container">
-      <div className="profile-card">
-        <img src="https://via.placeholder.com/150" alt="Profile" className="profile-image" />
-        {isEditing ? (
-          <form onSubmit={handleSave} className="profile-form">
-            <div className="form-group">
-              <label>Name:</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="form-group">
-              <label>Email:</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-              />
-            </div>
-            <button type="submit" className="save-button">Save</button>
-            <button type="button" className="cancel-button" onClick={() => setIsEditing(false)}>Cancel</button>
-          </form>
-        ) : (
-          <>
-            <p>Name: {user.name}</p>
-            <p>Email: {user.email}</p>
-            <button onClick={() => setIsEditing(true)} className="edit-button">Edit</button>
-          </>
-        )}
-        {message && <p className="message">{message}</p>}
+    <div className="profile-page">
+      <Navbar onNavigate={onNavigate} onLogout={onLogout} />
+      <div className="profile-container">
+        <div className="profile-card">
+          <img src="https://via.placeholder.com/150" alt="Profile" className="profile-image" />
+          {isEditing ? (
+            <form onSubmit={handleSave} className="profile-form">
+              <div className="form-group">
+                <label htmlFor="name">Name:</label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="email">Email:</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <button type="submit" className="save-button">Save</button>
+              <button type="button" className="cancel-button" onClick={() => setIsEditing(false)}>Cancel</button>
+            </form>
+          ) : (
+            <>
+              <p>Name: {user.name}</p>
+              <p>Email: {user.email}</p>
+              <button onClick={() => setIsEditing(true)} className="edit-button">Edit</button>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
