@@ -3,7 +3,7 @@ import Navbar from "./components/Navbar";
 import EventsList from "./components/EventsList";
 import BookmarksList from "./components/BookmarksList";
 import NotificationsList from "./components/NotificationsList";
-import Profile from "./components/Profile";
+
 import Home from "./components/Home";
 import Register from "./components/Register";
 import Login from "./components/Login";
@@ -12,7 +12,7 @@ import "./components/styles.css";
 
 const App = () => {
   const [view, setView] = useState("register"); // Start with the register page
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({ id: null, name: "John Doe", email: "john.doe@example.com", joinedDate: "2023-01-01" });
   const [selectedEvent, setSelectedEvent] = useState(null);
 
   useEffect(() => {
@@ -74,8 +74,7 @@ const App = () => {
         return <BookmarksList />;
       case "notifications":
         return <NotificationsList />;
-      case "profile":
-        return <Profile userId={user.id} onUpdateUser={handleUpdateUser} />;
+    
       default:
         return <Register onRegisterSuccess={handleRegisterSuccess} onNavigateToLogin={() => setView("login")} />;
     }
@@ -83,7 +82,7 @@ const App = () => {
 
   return (
     <div>
-      {user && <Navbar onNavigate={setView} onLogout={handleLogout} />}
+      {user.id && <Navbar onNavigate={setView} onLogout={handleLogout} />}
       {renderView()}
     </div>
   );
