@@ -3,11 +3,11 @@ import Navbar from "./components/Navbar";
 import EventsList from "./components/EventsList";
 import BookmarksList from "./components/BookmarksList";
 import NotificationsList from "./components/NotificationsList";
+import Profile from "./components/Profile";
 import Home from "./components/Home";
 import Register from "./components/Register";
 import Login from "./components/Login";
 import EventDetails from "./components/EventDetails";
-import Profile from "./components/Profile";
 import "./components/styles.css";
 
 const App = () => {
@@ -75,7 +75,7 @@ const App = () => {
       case "notifications":
         return <NotificationsList />;
       case "profile":
-        return <Profile userId={user.id} onUpdateUser={handleUpdateUser} />;
+        return <Profile user={user} onUpdateUser={handleUpdateUser} />;
       default:
         return <Register onRegisterSuccess={handleRegisterSuccess} onNavigateToLogin={() => setView("login")} />;
     }
