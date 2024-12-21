@@ -1,51 +1,70 @@
-import React, { useState } from "react";
-import "./styles.css";
+import React from "react";
+import "./EventsList.css";
 
-const EventsList = ({ userId, onBookmark }) => {
-  const [selectedEvent, setSelectedEvent] = useState(null);
-
-  // Dummy data for events
+const EventsList = ({ onViewDetails }) => {
   const events = [
-    { id: 1, name: "Event 1", image: "/images/image.png", description: "Description for Event 1" },
-    { id: 2, name: "Event 2", image: "/images/image.png", description: "Description for Event 2" },
-    { id: 3, name: "Event 3", image: "/images/image.png", description: "Description for Event 3" },
-    { id: 4, name: "Event 4", image: "/images/image.png", description: "Description for Event 4" },
-    { id: 5, name: "Event 5", image: "/images/image.png", description: "Description for Event 5" },
-    // Add more events as needed
+    {
+      id: 1,
+      title: 'Music Concert',
+      description: 'Join us for an evening of live music and entertainment.',
+      date: '2023-10-01',
+      location: 'New York, NY',
+      imageUrl: 'https://via.placeholder.com/300x200'
+    },
+    {
+      id: 2,
+      title: 'Art Exhibition',
+      description: 'Explore the latest art pieces from local artists.',
+      date: '2023-11-15',
+      location: 'Los Angeles, CA',
+      imageUrl: 'https://via.placeholder.com/300x200'
+    },
+    {
+      id: 3,
+      title: 'Tech Conference',
+      description: 'Join industry leaders to discuss the latest in technology.',
+      date: '2023-12-05',
+      location: 'San Francisco, CA',
+      imageUrl: 'https://via.placeholder.com/300x200'
+    },
+    {
+      id: 4,
+      title: 'Food Festival',
+      description: 'Taste dishes from around the world at our annual food festival.',
+      date: '2024-01-20',
+      location: 'Chicago, IL',
+      imageUrl: 'https://via.placeholder.com/300x200'
+    },
+    {
+      id: 5,
+      title: 'Book Fair',
+      description: 'Discover new books and meet your favorite authors.',
+      date: '2024-02-10',
+      location: 'Boston, MA',
+      imageUrl: 'https://via.placeholder.com/300x200'
+    },
+    {
+      id: 6,
+      title: 'Film Festival',
+      description: 'Watch the latest independent films from around the world.',
+      date: '2024-03-15',
+      location: 'Austin, TX',
+      imageUrl: 'https://via.placeholder.com/300x200'
+    }
   ];
-
-  const handleEventClick = (event) => {
-    setSelectedEvent(event);
-  };
-
-  const handleCloseModal = () => {
-    setSelectedEvent(null);
-  };
 
   return (
     <div className="events-container">
-      <h2>Events</h2>
-      <ul className="events-list">
-        {events.map((event) => (
-          <li key={event.id} className="event-item">
-            <img src={event.image} alt={event.name} className="event-image" />
-            <h3>{event.name}</h3>
-            <button onClick={() => onBookmark(event.id)}>Bookmark</button>
-            <button onClick={() => handleEventClick(event)}>View Details</button>
-          </li>
-        ))}
-      </ul>
-
-      {selectedEvent && (
-        <div className="modal">
-          <div className="modal-content">
-            <span className="close" onClick={handleCloseModal}>&times;</span>
-            <h2>{selectedEvent.name}</h2>
-            <img src={selectedEvent.image} alt={selectedEvent.name} className="modal-image" />
-            <p>{selectedEvent.description}</p>
-          </div>
+      {events.map(event => (
+        <div key={event.id} className="event-card">
+          <img src={event.imageUrl} alt={event.title} />
+          <h3>{event.title}</h3>
+          <p>{event.description}</p>
+          <p>{event.date}</p>
+          <p>{event.location}</p>
+          <button onClick={() => onViewDetails(event)}>View Details</button>
         </div>
-      )}
+      ))}
     </div>
   );
 };

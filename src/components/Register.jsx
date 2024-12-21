@@ -1,12 +1,18 @@
-// Register.jsx
-import React, { useState } from "react";
-import axios from "axios";
-import "./styles.css";
-const Register = ({ onRegisterSuccess }) => {
-  const [formData, setFormData] = useState({ name: "", email: "", password: "" });
-  const [message, setMessage] = useState("");
+import React, { useState } from 'react';
+import './Register.css';
 
-  const handleChange = (e) => {
+const Register = ({ onRegisterSuccess, onNavigateToLogin }) => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    phoneNumber: '',
+    address: '',
+    profilePictureUrl: 'https://via.placeholder.com/150',
+  });
+  const [message, setMessage] = useState('');
+
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
@@ -14,48 +20,93 @@ const Register = ({ onRegisterSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5000/register", formData);
-      if (response.status === 201) {
-        setMessage("Registration successful! Redirecting to login...");
-        setTimeout(() => onRegisterSuccess(), 2000);
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      if (response.ok) {
+        setMessage('Registration successful! Redirecting to login...');
+        setTimeout(() => {
+          onRegisterSuccess();
+        }, 2000);
       } else {
-        setMessage(response.data.message || "An error occurred.");
+        const errorData = await response.json();
+        setMessage(`Registration failed: ${errorData.message}`);
       }
     } catch (error) {
-      setMessage("An unexpected error occurred.");
+      setMessage(`Error registering user: ${error.message}`);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Join Us Today!</h2>
-      <input
-        type="text"
-        name="name"
-        value={formData.name}
-        onChange={handleChange}
-        placeholder="Enter Full Name"
-        required
-      />
-      <input
-        type="email"
-        name="email"
-        value={formData.email}
-        onChange={handleChange}
-        placeholder="Enter Email"
-        required
-      />
-      <input
-        type="password"
-        name="password"
-        value={formData.password}
-        onChange={handleChange}
-        placeholder="Enter Password"
-        required
-      />
-      <button type="submit">Register</button>
-      <p>{message}</p>
-    </form>
+    <div className="register-container">
+      <form onSubmit={handleSubmit} className="register-form">
+        <h2>Register</h2>
+        {message && <p className="message">{message}</p>}
+        <div className="form-group">
+          <label>Name:</label>
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>Email:</label>
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>Password:</label>
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+        <div className="form-group">
+          <label>Phone Number:</label>
+          <input
+            type="text"
+            name="phoneNumber"
+            value={formData.phoneNumber}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className="form-group">
+          <label>Address:</label>
+          <input
+            type="text"
+            name="address"
+            value={formData.address}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className="form-group">
+          <label>Profile Picture URL:</label>
+          <input
+            type="text"
+            name="profilePictureUrl"
+            value={formData.profilePictureUrl}
+            onChange={handleInputChange}
+          />
+        </div>
+        <button type="submit" className="register-button">Register</button>
+        <button type="button" className="login-button" onClick={onNavigateToLogin}>Already have an account? Login</button>
+      </form>
+    </div>
   );
 };
 

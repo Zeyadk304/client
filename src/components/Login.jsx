@@ -1,53 +1,41 @@
 import React, { useState } from "react";
-import axios from "axios";
-import "./styles.css";
+import './Login.css';
 
 const Login = ({ onLogin }) => {
-  const [formData, setFormData] = useState({ email: "", password: "" });
-  const [message, setMessage] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.post("http://localhost:5000/login", formData);
-      if (response.status === 200) {
-        setMessage("Login successful!");
-        onLogin(response.data.user_id, response.data.user_name);
-      } else {
-        setMessage(response.data.message || "An error occurred.");
-      }
-    } catch (error) {
-      setMessage("An unexpected error occurred.");
-    }
+    // Simulate a login process
+    const userId = 1; // This should come from your authentication logic
+    const userName = username; // This should come from your authentication logic
+    onLogin(userId, userName);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Welcome Back!</h2>
-      <input
-        type="email"
-        name="email"
-        value={formData.email}
-        onChange={handleChange}
-        placeholder="Enter Email"
-        required
-      />
-      <input
-        type="password"
-        name="password"
-        value={formData.password}
-        onChange={handleChange}
-        placeholder="Enter Password"
-        required
-      />
-      <button type="submit">Login</button>
-      <p>{message}</p>
-    </form>
+    <div className="login-container">
+      <h2>Login</h2>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>Username:</label>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </div>
+        <div>
+          <label>Password:</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        <button type="submit">Login</button>
+      </form>
+    </div>
   );
 };
 

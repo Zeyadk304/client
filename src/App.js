@@ -1,63 +1,89 @@
-import React, { useState } from "react";
-
-import Home from "./components/Home";
-import Login from "./components/Login";
-import Register from "./components/Register";
-import Profile from "./components/Profile";
+import React, { useState, useEffect } from "react";
+import Navbar from "./components/Navbar";
 import EventsList from "./components/EventsList";
 import BookmarksList from "./components/BookmarksList";
 import NotificationsList from "./components/NotificationsList";
-import Navbar from "./components/Navbar";
+import Profile from "./components/Profile";
+import Home from "./components/Home";
+import Register from "./components/Register";
+import Login from "./components/Login";
+import EventDetails from "./components/EventDetails";
+import "./components/styles.css";
 
 const App = () => {
-  const [user, setUser] = useState({ id: null, name: "" });
-  const [view, setView] = useState("home"); // Default to home view
-  const [searchResults, setSearchResults] = useState([]);
+  const [view, setView] = useState("register"); // Start with the register page
+  const [user, setUser] = useState(null);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
-  const handleLogin = (id, name) => {
-    setUser({ id, name });
-    setView("profile");
+  useEffect(() => {
+    // Fetch the logged-in user's data from the backend
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch('/api/auth/user');
+        const data = await response.json();
+        setUser(data);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  const handleLogin = (userId, userName) => {
+    setUser({ id: userId, name: userName });
+    setView("home");
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    setView("login");
   };
 
   const handleRegisterSuccess = () => {
     setView("login");
   };
 
-  const handleLogout = () => {
-    setUser({ id: null, name: "" });
-    setView("home");
+  const handleViewDetails = (event) => {
+    setSelectedEvent(event);
+    setView("eventDetails");
   };
 
-  const handleSearch = (query) => {
-    // Implement search functionality here
-    console.log(`Searching for: ${query}`);
-    // Example: setSearchResults([...]);
+  const handleBackToEvents = () => {
+    setSelectedEvent(null);
+    setView("events");
+  };
+
+  const handleUpdateUser = (updatedUser) => {
+    setUser(updatedUser);
   };
 
   const renderView = () => {
     switch (view) {
       case "home":
-        return <Home onLogin={handleLogin} />;
+        return <Home user={user} onNavigate={setView} />;
       case "login":
         return <Login onLogin={handleLogin} />;
       case "register":
-        return <Register onRegisterSuccess={handleRegisterSuccess} />;
-      case "profile":
-        return <Profile user={user} onLogout={handleLogout} />;
+        return <Register onRegisterSuccess={handleRegisterSuccess} onNavigateToLogin={() => setView("login")} />;
       case "events":
-        return <EventsList userId={user.id} onBookmark={(eventId) => console.log(`Bookmarking event ${eventId}`)} />;
+        return <EventsList onViewDetails={handleViewDetails} />;
+      case "eventDetails":
+        return <EventDetails event={selectedEvent} onBack={handleBackToEvents} />;
       case "bookmarks":
-        return <BookmarksList userId={user.id} onRemoveBookmark={(eventId) => console.log(`Removing bookmark for event ${eventId}`)} />;
+        return <BookmarksList />;
       case "notifications":
-        return <NotificationsList userId={user.id} />;
+        return <NotificationsList />;
+      case "profile":
+        return <Profile userId={user.id} onUpdateUser={handleUpdateUser} />;
       default:
-        return <Home onLogin={handleLogin} />;
+        return <Register onRegisterSuccess={handleRegisterSuccess} onNavigateToLogin={() => setView("login")} />;
     }
   };
 
   return (
-    <div className="app-container">
-      {user.id && <Navbar onSearch={handleSearch} onNavigate={setView} onLogout={handleLogout} />}
+    <div>
+      {user && <Navbar onNavigate={setView} onLogout={handleLogout} />}
       {renderView()}
     </div>
   );
